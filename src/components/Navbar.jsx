@@ -5,7 +5,7 @@ import { ShopContext } from "../context/ShopContext";
 
 const Navbar = () => {
   const [visible, setVisible] = useState(false);
-  const { setShowSearch } = useContext(ShopContext);
+  const { setShowSearch, showSearch } = useContext(ShopContext);
 
   return (
     <div className="flex justify-between items-center py-5 font-medium">
@@ -35,7 +35,7 @@ const Navbar = () => {
           src={assets.search_icon}
           className="w-5 cursor-pointer"
           alt=""
-          onClick={() => setShowSearch(true)}
+          onClick={() => setShowSearch(!showSearch)}
         />
         <div className="group relative">
           <img
