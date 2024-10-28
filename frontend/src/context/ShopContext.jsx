@@ -12,6 +12,7 @@ const ShopContextProvider = (props) => {
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
   const [products, setProducts] = useState([]);
+  const [token, setToken] = useState("");
   const [cartItems, setCartItems] = useState({});
 
   const navigate = useNavigate();
@@ -36,6 +37,22 @@ const ShopContextProvider = (props) => {
     }
 
     setCartItems(cartData);
+
+    if (token) {
+      try {
+        await axios.post(
+          backendUrl + "/api/cart/add",
+          {
+            itemId,
+            size,
+          },
+          { headers: { token } }
+        );
+      } catch (error) {
+        console.log(error);
+        toast.error(error.message);
+      }
+    }
   };
 
   const getCartCount = () => {
@@ -58,6 +75,25 @@ const ShopContextProvider = (props) => {
     cartData[itemId][size] = quantity;
 
     setCartItems(cartData);
+
+    if (token) {
+      try {
+        await axios.post(
+          backendUrl + "/api/cart/update",
+          {
+            itemId,
+            size,
+            quantity,
+          },
+          {
+            headers: { token },
+          }
+        );
+      } catch (error) {
+        console.log(error);
+        toast.error(error.message);
+      }
+    }
   };
 
   const getCartAmount = () => {
@@ -79,12 +115,41 @@ const ShopContextProvider = (props) => {
     try {
       const response = await axios.get(backendUrl + "/api/product/list");
 
-      console.log(response.data);
-    } catch (error) {}
+      if (response.data.success) {
+        setProducts(response.data.products);
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const getUserCart = async (token) => {
+    try {
+      const response = await axios.post(
+        backendUrl + "/api/cart/get",
+        {},
+        { headers: { token } }
+      );
+      if (response.data.success) {
+        setCartItems(response.data.cartData);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message);
+    }
   };
 
   useEffect(() => {
     getProductsData();
+  }, []);
+
+  useEffect(() => {
+    if (!token && localStorage.getItem("token")) {
+      setToken(localStorage.getItem("token"));
+      getUserCart(localStorage.getItem("token"));
+    }
   }, []);
 
   const value = {
@@ -102,6 +167,9 @@ const ShopContextProvider = (props) => {
     getCartAmount: getCartAmount,
     navigate: navigate,
     backendUrl: backendUrl,
+    token: token,
+    setToken: setToken,
+    setCartItems: setCartItems,
   };
 
   return (
