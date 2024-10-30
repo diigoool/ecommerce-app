@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { backendUrl, currency } from "../App";
+import { backendUrl, currency, formatCurrency } from "../App";
 import { toast } from "react-toastify";
 
 const List = ({ token }) => {
@@ -71,11 +71,7 @@ const List = ({ token }) => {
             <img src={item.images[0]} alt="" className="w-10" />
             <p>{item.name}</p>
             <p>{item.category}</p>
-            <p>
-              {" "}
-              {currency}
-              {item.price}
-            </p>
+            <p> {formatCurrency(item.price)}</p>
             <div className="text-center">
               <button
                 onClick={() => removeProduct(item._id)}

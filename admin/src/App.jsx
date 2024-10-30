@@ -10,7 +10,14 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const backendUrl = import.meta.env.VITE_BACKEND_URL;
-export const currency = "$";
+export const currency = "Rp.";
+
+export const formatCurrency = (price) => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+  }).format(price);
+};
 
 const App = () => {
   const [token, setToken] = useState(

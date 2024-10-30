@@ -6,8 +6,8 @@ import { useNavigate } from "react-router-dom";
 export const ShopContext = createContext();
 
 const ShopContextProvider = (props) => {
-  const currency = "$";
-  const deliveryFee = 10;
+  const currency = "Rp. ";
+  const deliveryFee = 20000;
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const [search, setSearch] = useState("");
   const [showSearch, setShowSearch] = useState(false);
@@ -16,6 +16,14 @@ const ShopContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
 
   const navigate = useNavigate();
+
+  const formatCurrency = (price) => {
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      minimumFractionDigits: 0,
+    }).format(price);
+  };
 
   const addToCart = async (itemId, size) => {
     if (!size) {
@@ -176,6 +184,7 @@ const ShopContextProvider = (props) => {
     token: token,
     setToken: setToken,
     setCartItems: setCartItems,
+    formatCurrency: formatCurrency,
   };
 
   return (
